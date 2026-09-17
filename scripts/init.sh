@@ -14,7 +14,6 @@ set -euo pipefail
 # regardless of the directory it is invoked from.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-CHARTER_TEMPLATE="$SKILL_DIR/assets/charter-template.md"
 SPECS_README="$SKILL_DIR/assets/specs-readme.md"
 RTM_TEMPLATE="$SKILL_DIR/assets/qa-rtm-template.md"
 
@@ -23,19 +22,20 @@ SPECS="$TARGET/specs"
 
 echo "Scaffolding specs/ under: $TARGET"
 
-# Folders that make up the spec structure. Empty ones get a .gitkeep so they
-# survive in version control.
-DIRS=(
-  "charter"
+# Committed folders. Empty ones get a .gitkeep so they survive in version control.
+COMMITTED_DIRS=(
   "requirements"
-  "design/architecture"
-  "design/features"
-  "implementation"
   "qa/test-cases"
+)
+
+# Local, disposable folders. These are git-ignored, so no .gitkeep — they just
+# need to exist locally.
+LOCAL_DIRS=(
+  "tasks"
   "qa/tasks"
 )
 
-for dir in "${DIRS[@]}"; do
+for dir in "${COMMITTED_DIRS[@]}"; do
   mkdir -p "$SPECS/$dir"
   # Keep the (otherwise empty) directory tracked by git.
   if [ -z "$(ls -A "$SPECS/$dir")" ]; then
@@ -43,16 +43,20 @@ for dir in "${DIRS[@]}"; do
   fi
 done
 
-# Seed the charter from the template, without clobbering an existing one.
-CHARTER_DEST="$SPECS/charter/charter.md"
-if [ -e "$CHARTER_DEST" ]; then
-  echo "  charter already exists, leaving it as-is: $CHARTER_DEST"
-else
-  cp "$CHARTER_TEMPLATE" "$CHARTER_DEST"
-  # The seeded charter file replaces the placeholder keep-file.
-  rm -f "$SPECS/charter/.gitkeep"
-  echo "  seeded charter: $CHARTER_DEST"
-fi
+for dir in "${LOCAL_DIRS[@]}"; do
+  mkdir -p "$SPECS/$dir"
+done
+
+# Git-ignore the local task folders so they are never committed.
+GITIGNORE="$TARGET/.gitignore"
+for entry in "specs/tasks/" "specs/qa/tasks/"; do
+  if [ -f "$GITIGNORE" ] && grep -qxF "$entry" "$GITIGNORE"; then
+    echo "  .gitignore already lists $entry"
+  else
+    printf '%s\n' "$entry" >> "$GITIGNORE"
+    echo "  added to .gitignore: $entry"
+  fi
+done
 
 # Seed the human-facing README at the root of specs/, without clobbering.
 README_DEST="$SPECS/README.md"
@@ -75,9 +79,10 @@ fi
 echo "Done."
 echo
 echo "Next step — this is for the agent, not this script:"
-echo "  Record the methodology in AGENTS.md so future sessions pick it up. Add a"
-echo "  short section stating the project follows spec-driven development, that"
-echo "  specs/ is the source of truth, and that agents should consult the skill"
-echo "  before writing requirements, design, or code. APPEND to the existing"
-echo "  AGENTS.md if there is one — do not overwrite its content; create it only"
-echo "  if it does not exist."
+echo "  Record the methodology and conventions in AGENTS.md so future sessions"
+echo "  pick them up. Add a section stating the project follows spec-driven"
+echo "  development, that the committed specs/ are the source of truth, and that"
+echo "  agents should consult the skill before writing requirements, planning, or"
+echo "  code. AGENTS.md is also where the project's conventions live (tech stack,"
+echo "  coding standards, repo layout, testing approach). APPEND to the existing"
+echo "  AGENTS.md if there is one — do not overwrite it; create it only if absent."

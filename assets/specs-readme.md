@@ -8,78 +8,70 @@ does and how it is built.
 ## What is spec-driven development?
 
 Instead of jumping straight from an idea to code, we write the intent down and
-refine it in stages: first *what* we want, then *how* we'll build it, then the
-concrete steps, then the code, then the tests that prove it works. Each stage is
-captured as a durable, version-controlled document that lives here alongside the
-code.
+refine it in stages: first *what* we want, then a high-level plan for *how* we'll
+build it, then the code, then the tests that prove it works. The durable stages
+are captured as version-controlled documents that live here alongside the code.
 
 The point is simple: catching a misunderstanding in a paragraph is far cheaper
 than catching it in a thousand lines of code. The specs give everyone — people
 and AI agents alike — a shared, current picture of the system to build against.
 
-These documents are **living**: when something changes, we update the spec, not
-just the code. If the code and the spec disagree, one of them is wrong, and we
-reconcile them rather than let them drift apart.
+The committed documents are **living**: when something changes, we update the
+spec, not just the code. If the code and a committed spec disagree, one of them
+is wrong, and we reconcile them rather than let them drift apart.
 
-## The five stages
+## Standing context
+
+Two things sit outside the per-feature flow and are read by every stage:
+
+- **`AGENTS.md`** (in the project root) — the project's conventions and rules:
+  tech stack, coding standards, repository layout, testing approach. Read it
+  first; everything here must respect it.
+- **Architecture docs** — the evolving technical design of the system, organized
+  by topic (auth, data storage, …). These live in the project's ordinary
+  documentation (e.g. `docs/`), **not** under `specs/`. They are committed and
+  kept current, and can be developed ahead of or alongside a feature's
+  requirements.
+
+## The per-feature flow
 
 1. **Requirements** — what the system must do, in plain non-technical language
-   anyone can understand. No implementation detail.
-2. **Design** — how we'll build it: system architecture and the technical detail
-   for each feature.
-3. **Tasks** — the requirements and design broken into concrete, ordered work
-   items that translate directly into code (including unit and integration
-   tests).
-4. **Implementation** — the actual code and tests.
-5. **QA** — end-to-end tests that verify the finished feature against its
-   requirements, treating the system as a black box.
+   anyone can understand. No implementation detail. *(committed)*
+2. **Tasks** — the feature's implementation split into a handful of high-level,
+   engineer-sized slices: the decisions (data model, API, structure) and the
+   parts to build, at a level a person can read and control. One file per task.
+   *(local and disposable — see below)*
+3. **Implementation** — the actual code and tests, built **one task at a time**.
+   The detailed, file-level plan is expanded from each task during
+   implementation. *(code committed)*
+4. **QA** — end-to-end tests that verify the finished feature against its
+   requirements, treating the system as a black box. *(test cases + RTM
+   committed)*
 
 ## Folder structure
 
 ```
 specs/
-  charter/           Project constitution: tech stack, standards, principles.
-                     Read this first — everything else must respect it.
   requirements/      One file per feature, in plain business language.
-  design/
-    architecture/    Cross-cutting design docs (auth, data storage, ...),
-                     organized by topic.
-    features/        Technical design for individual features.
-  implementation/    Task breakdowns — the ordered steps to build each feature.
+  tasks/             LOCAL, git-ignored, disposable. Flat; one file per task named
+                     <datetime>_<name>.md: the engineer's high-level slices and,
+                     expanded into each during implementation, its detailed plan.
   qa/
     test-cases/      End-to-end test scenarios per feature.
-    tasks/           Steps to implement those scenarios as automated tests.
+    tasks/           LOCAL, git-ignored. QA tasks (flat, one file per task) — steps
+                     to automate the test cases, written like implementation tasks.
     rtm.md           Requirement traceability matrix: which requirement is
                      covered by which test.
 ```
 
-## The project charter
-
-The `charter/` folder holds the project's **constitution**: the durable,
-project-wide norms and constraints that apply across every feature — the
-technology stack, coding standards and conventions, and architectural
-principles. Unlike requirements and design,
-the charter is not tied to a single feature; it is the fixed context that every
-stage is expected to respect.
-
-Why bother writing it down? Without it, an AI agent re-derives the project's
-conventions from scratch each time it works — guessing the stack, the structure,
-how tests are written — and guesses differently on different days, so the code
-slowly drifts out of consistency. The charter states that context once, so it is
-applied the same way every time. It is what lets separate sessions and different
-agents produce code that reads as though one hand wrote it.
-
-Developing and maintaining the charter is the **responsibility of the
-development team**. It is not generated as part of a feature's workflow — the
-team decides what belongs in it, keeps it current as the project's standards
-evolve, and treats it as authoritative. When in doubt about a convention or a
-technology choice, the charter is where the answer should live.
+`tasks/` and `qa/tasks/` are **local scratch**, not committed specs: they are the
+engineer's working surface for steering an implementation, and are discarded when
+the work is done.
 
 ## How to read a feature
 
-To understand a feature end to end, follow its trail across the folders: start
-with its **requirements** (what and why), then its **design** (how), then its
-**implementation** tasks (the steps), and finally its **QA** test cases (how we
-know it works). Requirements carry stable IDs (e.g. `FR-014`) that the later
-documents reference, so you can always trace a design decision or a test back to
-the requirement it serves.
+To understand a feature, start with its **requirements** (what and why), read the
+relevant **architecture** for the *how* of the system it lives in, and finally
+its **QA** test cases (how we know it works). Requirements carry stable IDs (e.g.
+`FR-014`) that the later documents reference, so you can always trace a test back
+to the requirement it serves.

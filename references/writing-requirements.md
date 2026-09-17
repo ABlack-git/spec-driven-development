@@ -11,8 +11,8 @@ feature**, holding one or more numbered requirements. Start from
 ## What a requirement is for
 
 A requirement captures **what the system must do and why**, in language any
-person can understand. It is the source of truth the design is built on. Write
-requirements before design, and get them right before moving on — a wrong
+person can understand. It is the source of truth the plan is built on. Write
+requirements before planning, and get them right before moving on — a wrong
 requirement caught here costs a sentence.
 
 ## The shape of a requirements file
@@ -125,8 +125,8 @@ Contrast — this leaks the *how* and does **not** belong in a requirement:
 ## IDs
 
 Give each requirement a stable ID — `FR-001`, `FR-002`, … for functional
-requirements (`NFR-001`, … for non-functional ones). Design, tasks, and QA
-reference these IDs, so:
+requirements (`NFR-001`, … for non-functional ones). The plan, architecture, and
+QA reference these IDs, so:
 
 - Never renumber or reuse an ID.
 - When a requirement is removed, **retire** its ID — do not recycle it for
@@ -164,11 +164,11 @@ analyst). Your job is to structure and sharpen their intent, not to invent it.
   ask. Do not fill gaps with guesses.
 - **Capture unknowns** in an "Open questions" section rather than resolving them
   silently.
-- Requirements are a **state artifact**: edit in place, and record significant
-  changes and their *why* in the change log (see `SKILL.md` and
+- Requirements are **committed and edited in place**: record significant changes
+  and their *why* in the change log (see `SKILL.md` and
   `references/maintenance.md`).
 - **Do one stage, then stop.** Once requirements are drafted, surface them for
-  review and approval before moving to design. Do not race ahead.
+  review and approval before moving to the plan. Do not race ahead.
 
 ## Common pitfalls
 

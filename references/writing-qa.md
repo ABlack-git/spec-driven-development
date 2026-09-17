@@ -21,10 +21,12 @@ Write so each test case has exactly one possible reading:
 
 Work these in order:
 
-1. **Write test cases** from the requirements — `specs/qa/test-cases/<feature>.md`.
-2. **Write a test-implementation plan** — the tasks to automate them, in
-   `specs/qa/tasks/`.
-3. **Update the RTM** — `specs/qa/rtm.md`.
+1. **Write test cases** from the requirements — `specs/qa/test-cases/<feature>.md`
+   (committed).
+2. **Write the test-implementation plan as QA tasks** — how to automate them, in
+   `specs/qa/tasks/` (local and disposable, written exactly like implementation
+   tasks — see [writing-tasks.md](writing-tasks.md)).
+3. **Update the RTM** — `specs/qa/rtm.md` (committed).
 4. **Implement** the automated tests and run them.
 
 ## Black-box discipline
@@ -46,7 +48,8 @@ fine.
 ## Test cases
 
 Use [../assets/qa-test-cases-template.md](../assets/qa-test-cases-template.md).
-One file per feature (`specs/qa/test-cases/<feature>.md`); it is a state artifact.
+One file per feature (`specs/qa/test-cases/<feature>.md`); it is committed and
+edited in place.
 
 Because test cases derive from the **requirements**, not the code, you can write
 them as soon as the requirements are settled — you do not need to wait for
@@ -74,24 +77,30 @@ case(s) that cover it. It does two jobs:
 
 Update it whenever test cases or requirements change.
 
-## Test-implementation plan
+## Test-implementation plan (QA tasks)
 
-Reuse the implementation-plan template
-([../assets/implementation-plan-template.md](../assets/implementation-plan-template.md))
-for `specs/qa/tasks/YYYYMMDDTHHMM-<slug>.md` — same shape and naming (an event
-artifact). Its steps **reference the `TC-xxx` IDs** and add the *how* (harness,
-fixtures, where the tests live, sequence). Reference the test cases; do not
-restate the scenarios. Set the plan's `satisfies` frontmatter to the `TC-xxx` IDs
-it automates (a QA plan satisfies test cases, where a feature plan satisfies
-`FR-xxx`).
+The test-implementation plan **is written as tasks**, exactly like an
+implementation task — same altitude, same co-authored and disposable discipline.
+Follow [writing-tasks.md](writing-tasks.md) and reuse the task template
+([../assets/task-template.md](../assets/task-template.md)); only three things
+differ:
+
+- **Where:** `specs/qa/tasks/<datetime>_<task_name>.md` — flat, one file per QA
+  task, mirroring `specs/tasks/`.
+- **Delivers:** the `TC-xxx` IDs the task automates, not `FR-xxx` — a QA task
+  delivers test cases.
+- **Steps** reference the `TC-xxx` IDs and add the *how* (harness, fixtures, where
+  the tests live, sequence). Reference the test cases; do not restate the
+  scenarios.
 
 ## Finishing
 
 - **Implement and run** the automated tests; confirm they pass against the
   requirements.
 - **Do one stage, then stop.** When requirements or test cases change later, see
-  [maintenance.md](maintenance.md) — update the affected test cases and the RTM,
-  and create a new test-implementation plan rather than editing an old one.
+  [maintenance.md](maintenance.md) — update the affected test cases and the RTM
+  (both committed). The test-implementation plan is local and disposable —
+  regenerate it as needed.
 
 ## Common pitfalls
 

@@ -4,7 +4,7 @@ feature: <feature-slug>          # e.g. password-reset
 
 <!--
   End-to-end test cases for one feature, at
-  specs/qa/test-cases/<feature>.md. See references/writing-qa.md. State artifact,
+  specs/qa/test-cases/<feature>.md. See references/writing-qa.md. Committed and
   feature-named. Each case verifies one or more requirements. Assertions come
   from the requirements; read code only for interaction mechanics (selectors,
   routes), never to decide what is correct. Fill in and delete this comment.
